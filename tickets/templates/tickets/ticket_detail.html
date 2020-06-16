@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="mb-4">
+        <h1>{{ ticket.title }}</h1>
+        <hr>
+    </div>
+    <nav>
+        <ol class="breadcrumb">
+            {% if not ticket.project.archived %}
+                <li class="breadcrumb-item"><a href="{% url "project_list" %}">Active Projects</a></li>
+            {% else %}
+                <li class="breadcrumb-item"><a href="{% url "project_archive_list" %}">Archived Projects</a></li>
+            {% endif %}
+            <li class="breadcrumb-item">
+                <a href="{% url "project_detail_ticket_open" ticket.project.pk %}">{{ ticket.project.title }}</a>
+            </li>
+            <li class="breadcrumb-item active">{{ ticket.title }}</li>
+        </ol>
+    </nav>
+    <div class="card mb-4">
+        <div class="card-body">
+            <p class="card-text"><b>Description: &nbsp;&nbsp;&nbsp;</b>{{ ticket.description }}</p>
+            <p class="card-text">
+                <b>Project: &nbsp;&nbsp;&nbsp;</b>
+                <a href="{% url "project_detail_ticket_open" ticket.project.pk %}">{{ ticket.project.title }}</a>
+            </p>
+            {% if ticket.assigned_to %}
+                <p class="card-text"><b>Assigned To: &nbsp;&nbsp;&nbsp;</b>{{ ticket.assigned_to.user.username }}</p>
+            {% else %}
+                <p class="card-text"><b>Assigned To: &nbsp;&nbsp;&nbsp;</b>N/A</p>
+            {% endif %}
+            <p class="card-text"><b>Author: &nbsp;&nbsp;&nbsp;</b>{{ ticket.author.user.username }}</p>
+            <p class="card-text"><b>Created Date: &nbsp;&nbsp;&nbsp;</b>{{ ticket.created_date }}</p>
+            <p class="card-text"><b>Priority: &nbsp;&nbsp;&nbsp;</b>{{ ticket.get_priority_display }}</p>
+            <p class="card-text"><b>Status: &nbsp;&nbsp;&nbsp;</b>{{ ticket.get_status_display }}</p>
+            <p class="card-text"><b>Type: &nbsp;&nbsp;&nbsp;</b>{{ ticket.get_type_display }}</p>
+            {% if ticket.updated_date %}
+                <p class="card-text"><b>Updated Date: &nbsp;&nbsp;&nbsp;</b>{{ ticket.updated_date }}</p>
+            {% endif %}
+            {% if ticket.project.archived == False %}
+                <div class="btn-group mt-4">
+                    <form action="{% url "comment_new" ticket.pk %}">
+                        <input class="btn btn-secondary" type="submit" value="Add Comment"/>
+                    </form>
+                    {% if not user.account.role == "user" %}
+                        {% if user.account.role == "admin" or user.account.role == "project_manager" and user.account == ticket.project.project_manager or user.account.role == "developer" and user.account == ticket.assigned_to %}
+                            <form action="{% url "ticket_edit" ticket.pk %}" class="ml-1">
+                                <input class="btn btn-secondary" type="submit" value="Manage Ticket"/>
+                            </form>
+                            {% if not ticket.status == "closed" %}
+                                <form action="{% url "ticket_close" ticket.pk %}" class="ml-1">
+                                    <input class="btn btn-secondary" type="submit" value="Close Ticket"/>
+                                </form>
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="mb-4">
+        <h2>Comments</h2>
+        <hr>
+    </div>
+    {% for comment in ticket.comments.all %}
+        <div class="card mb-4" style="width: 75%;">
+            <div class="card-body">
+                <h5 class="card-title">{{ comment.author.user.username }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{ comment.created_date }}</h6>
+                <p class="card-text">{{ comment.text }}</p>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

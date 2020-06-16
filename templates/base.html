@@ -1,0 +1,78 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="initial-scale=1, shrink-to-fit=no, width=device-width" name="viewport">
+    <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" rel="stylesheet">
+    <title>Issue Tracker</title>
+</head>
+<body>
+<div class="container">
+    {% if request.user.is_authenticated %}
+        <nav class="bg-light navbar navbar-expand-lg navbar-light mb-4 mt-4">
+            <a class="navbar-brand" href="/">Dashboard</a>
+            <button class="navbar-toggler" data-target="#navbarSupportedContent" data-toggle="collapse" type="button">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="mr-auto navbar-nav">
+                    {% if request.user.account.role == "user" %}
+                        <li class="nav-item active">
+                            <a class="nav-link" href="/tickets/created/">My Tickets
+                                <span class="sr-only">(current)</span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item active">
+                            <a class="nav-link" href="/tickets/assigned/">My Tickets
+                                <span class="sr-only">(current)</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li class="dropdown nav-item">
+                        <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#">Projects</a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="/projects/">Active Projects</a>
+                            <a class="dropdown-item" href="/projects/archive/">Archived Projects</a>
+                            {% if user.account.role == "admin" or user.account.role == "project_manager" %}
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="/projects/new/">New Project</a>
+                            {% endif %}
+                        </div>
+                    </li>
+                    <li class="dropdown nav-item">
+                        <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#">Account</a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="{% url "notification_list" %}">Inbox</a>
+                            <a class="dropdown-item" href="{% url "account_detail" user.account.pk %}">My Account</a>
+                            {% if user.account.role == "admin" %}
+                                <a class="dropdown-item" href="/accounts/">All Accounts</a>
+                            {% endif %}
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/accounts/logout/">Log Out</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        {% if request.user.account.new_notifications %}
+            <div class="card mb-4">
+                <div class="card-body card-text"><a href="{% url "notification_list" %}">New Notifications:</a>
+                    &nbsp;<div class="badge badge-primary">{{ request.user.account.new_notifications.count }}</div>
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+    {% block content %}
+    {% endblock %}
+</div>
+<script crossorigin="anonymous" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<script src="{% static "table.js" %}"></script>
+</body>
+</html>

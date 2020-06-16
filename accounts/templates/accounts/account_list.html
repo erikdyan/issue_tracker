@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="mb-4">
+        <h1>All Accounts</h1>
+        <hr>
+    </div>
+    <input class="mb-4" id="input" onkeyup="filter('input', 'table')" placeholder="Filter" type="text">
+    <table class="table table-bordered table-striped" id="table">
+        <thead>
+        <tr>
+            <th onclick="sortTable(0, 'table')" style="cursor: pointer">Username</th>
+            <th onclick="sortTable(1, 'table')" style="cursor: pointer">First Name</th>
+            <th onclick="sortTable(2, 'table')" style="cursor: pointer">Last Name</th>
+            <th onclick="sortTable(3, 'table')" style="cursor: pointer">Email</th>
+            <th onclick="sortTable(4, 'table')" style="cursor: pointer">Role</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for account in accounts %}
+            <tr>
+                <td><a href="{% url "account_detail" account.pk %}">{{ account.user.username }}</a></td>
+                <td>{{ account.user.first_name }}</td>
+                <td>{{ account.user.last_name }}</td>
+                <td>{{ account.user.email }}</td>
+                <td>{{ account.get_role_display }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

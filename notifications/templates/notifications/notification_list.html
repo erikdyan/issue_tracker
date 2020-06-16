@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="mb-4">
+        <h1>Inbox</h1>
+        <hr>
+    </div>
+    <input class="mb-4" id="input" onkeyup="filter('input', 'table')" placeholder="Filter" type="text">
+    <table class="table table-bordered" id="table">
+        <thead>
+        <tr>
+            <th onclick="sortTable(0, 'table')" style="cursor: pointer">Title</th>
+            <th onclick="sortTable(1, 'table')" style="cursor: pointer">Text</th>
+            <th onclick="sortTable(1, 'table')" style="cursor: pointer">Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for notification in notifications %}
+            {% if notification.read %}
+                <tr>
+                    <td><a href="{% url "notification_detail" notification.pk %}">{{ notification.title }}</a></td>
+                    <td>{{ notification.text }}</td>
+                    <td>{{ notification.created_date }}</td>
+                </tr>
+            {% else %}
+                <tr class="table-primary">
+                    <td><a href="{% url "notification_detail" notification.pk %}">{{ notification.title }}</a></td>
+                    <td>{{ notification.text }}</td>
+                    <td>{{ notification.created_date }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

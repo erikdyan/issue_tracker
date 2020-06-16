@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="mb-4">
+        <h1>Manage Ticket</h1>
+        <hr>
+    </div>
+    <nav>
+        <ol class="breadcrumb">
+            {% if not ticket.project.archived %}
+                <li class="breadcrumb-item"><a href="{% url "project_list" %}">Active Projects</a></li>
+            {% else %}
+                <li class="breadcrumb-item"><a href="{% url "project_archive_list" %}">Archived Projects</a></li>
+            {% endif %}
+            <li class="breadcrumb-item">
+                <a href="{% url "project_detail_ticket_open" ticket.project.pk %}">{{ ticket.project.title }}</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url "ticket_detail" pk=form.instance.pk %}">{{ form.instance.title }}</a>
+            </li>
+            <li class="breadcrumb-item active">Manage</li>
+        </ol>
+    </nav>
+    <div class="mb-4">Title: &nbsp;&nbsp;&nbsp;{{ ticket.title }}</div>
+    <div class="mb-4">Description: &nbsp;&nbsp;&nbsp;{{ ticket.description }}</div>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-secondary" type="submit">Save</button>
+    </form>
+{% endblock %}

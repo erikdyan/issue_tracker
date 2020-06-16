@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="mb-4 mt-4">
+        <h1>Sign Up</h1>
+        <hr>
+    </div>
+    {% if messages %}
+        <div class="alert alert-secondary">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
+    {% endif %}
+    <div class="mb-4">Already registered? <a href="{% url "login" %}">Log In</a></div>
+    <form method="post">
+        {% csrf_token %}
+        {{ user_form.as_p }}
+        {{ account_form.role.as_hidden }}
+        <button class="btn btn-secondary" type="submit">Sign Up</button>
+    </form>
+{% endblock %}

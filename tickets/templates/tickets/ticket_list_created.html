@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="mb-4">
+        <h1>My Tickets</h1>
+        <hr>
+    </div>
+    {% if not user.account.role == "user" %}
+        <div class="dropdown mb-4">
+            <button class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" type="button">Created By Me
+            </button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="{% url "ticket_list_assigned" %}">Assigned To Me</a>
+            </div>
+        </div>
+    {% endif %}
+    <input class="mb-4" id="input" onkeyup="filter('input', 'table')" placeholder="Filter" type="text">
+    <table class="table table-bordered table-striped" id="table">
+        <thead>
+        <tr>
+            <th onclick="sortTable(0, 'table')" style="cursor: pointer">Title</th>
+            <th onclick="sortTable(1, 'table')" style="cursor: pointer">Project</th>
+            <th onclick="sortTable(2, 'table')" style="cursor: pointer">Created Date</th>
+            <th onclick="sortTable(3, 'table')" style="cursor: pointer">Priority</th>
+            <th onclick="sortTable(4, 'table')" style="cursor: pointer">Status</th>
+            <th onclick="sortTable(5, 'table')" style="cursor: pointer">Type</th>
+            <th onclick="sortTable(6, 'table')" style="cursor: pointer">Updated Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for ticket in tickets %}
+            <tr>
+                <td><a href="{% url "ticket_detail" ticket.pk %}">{{ ticket.title }}</a></td>
+                <td>
+                    <a href="{% url "project_detail_ticket_open" ticket.project.pk %}">{{ ticket.project.title }}</a>
+                </td>
+                <td>{{ ticket.created_date }}</td>
+                <td>{{ ticket.get_priority_display }}</td>
+                {% if ticket.status == "open" %}
+                    <td class="table-danger">{{ ticket.get_status_display }}</td>
+                {% elif ticket.status == "in_progress" %}
+                    <td class="table-warning">{{ ticket.get_status_display }}</td>
+                {% else %}
+                    <td class="table-success">{{ ticket.get_status_display }}</td>
+                {% endif %}
+                <td>{{ ticket.get_type_display }}</td>
+                <td>{{ ticket.updated_date }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="mb-4">
+        <h1>{{ project.title }}</h1>
+        <hr>
+    </div>
+    <nav>
+        <ol class="breadcrumb">
+            {% if not project.archived %}
+                <li class="breadcrumb-item"><a href="{% url "project_list" %}">Active Projects</a></li>
+            {% else %}
+                <li class="breadcrumb-item"><a href="{% url "project_archive_list" %}">Archived Projects</a></li>
+            {% endif %}
+            <li class="breadcrumb-item active">{{ project.title }}</li>
+        </ol>
+    </nav>
+    <div class="card mb-4">
+        <div class="card-body">
+            <p class="card-text"><b>Description: &nbsp;&nbsp;&nbsp;</b>{{ project.description }}</p>
+            <p class="card-text"><b>Created Date: &nbsp;&nbsp;&nbsp;</b>{{ project.created_date }}</p>
+            {% if project.archived %}
+                <p class="card-text"><b>Archived Date: &nbsp;&nbsp;&nbsp;</b>{{ project.archived_date }}</p>
+            {% else %}
+                <p class="card-text"><b>Project Manager:
+                    &nbsp;&nbsp;&nbsp;</b>{{ project.project_manager.user.username }}</p>
+            {% endif %}
+            {% if not project.archived %}
+                <div class="btn-group mt-4">
+                    <form action="{% url "ticket_new" project.pk %}">
+                        <input class="btn btn-secondary" type="submit" value="Create Ticket"/>
+                    </form>
+                    {% if user.account.role == "admin" or user.account.role == "project_manager" and user.account == project.project_manager %}
+                        <form action="{% url "project_edit" project.pk %}" class="ml-1">
+                            <input class="btn btn-secondary" type="submit" value="Manage Project"/>
+                        </form>
+                        <form action="{% url "project_archive" project.pk %}" class="ml-1">
+                            <input class="btn btn-secondary"
+                                   onclick="return confirm('Are you sure you want to archive this project? This cannot be undone.');"
+                                   type="submit" value="Archive Project"/>
+                        </form>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="mb-4">
+        <h2>Tickets</h2>
+        <hr>
+    </div>
+    <div class="dropdown mb-4">
+        <button class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" type="button">Closed</button>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="{% url "project_detail_ticket_open" project.pk %}">Open/In Progress</a>
+        </div>
+    </div>
+    <input class="mb-4" id="input" onkeyup="filter('input', 'table')" placeholder="Filter" type="text">
+    <table class="table table-bordered table-striped" id="table">
+        <thead>
+        <tr>
+            <th onclick="sortTable(0, 'table')" style="cursor: pointer">Title</th>
+            <th onclick="sortTable(1, 'table')" style="cursor: pointer">Description</th>
+            <th onclick="sortTable(2, 'table')" style="cursor: pointer">Type</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for ticket in tickets %}
+            <tr>
+                <td><a href="{% url "ticket_detail" ticket.pk %}">{{ ticket.title }}</a></td>
+                <td>{{ ticket.description }}</td>
+                <td>{{ ticket.get_type_display }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

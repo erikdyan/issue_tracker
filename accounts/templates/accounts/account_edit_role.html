@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="mb-4">
+        <h1>Manage Account</h1>
+        <hr>
+    </div>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url "account_list" %}">All Accounts</a></li>
+            <li class="breadcrumb-item"><a
+                    href="{% url "account_detail" form.instance.pk %}">{{ form.instance.user.username }}</a></li>
+            <li class="breadcrumb-item active">Manage</li>
+        </ol>
+    </nav>
+    <div class="mb-4">Username: &nbsp;&nbsp;&nbsp;{{ account.user.username }}</div>
+    <div class="mb-4">First Name: &nbsp;&nbsp;&nbsp;{{ account.user.first_name }}</div>
+    <div class="mb-4">Last Name: &nbsp;&nbsp;&nbsp;{{ account.user.last_name }}</div>
+    <div class="mb-4">Email Address: &nbsp;&nbsp;&nbsp;{{ account.user.email }}</div>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-secondary" type="submit">Save</button>
+    </form>
+{% endblock %}

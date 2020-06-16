@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="mb-4">
+        <h1>My Account</h1>
+        <hr>
+    </div>
+    {% if user.account.role == "admin" %}
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url "account_list" %}">All Accounts</a></li>
+                <li class="breadcrumb-item active">{{ account.user.username }}</li>
+            </ol>
+        </nav>
+    {% endif %}
+    {% if messages %}
+        <div class="alert alert-secondary">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
+    {% endif %}
+    <div class="mb-4"><b>Username: &nbsp;&nbsp;&nbsp;</b>{{ account.user.username }}</div>
+    <div class="mb-4"><b>First Name: &nbsp;&nbsp;&nbsp;</b>{{ account.user.first_name }}</div>
+    <div class="mb-4"><b>Last Name: &nbsp;&nbsp;&nbsp;</b>{{ account.user.last_name }}</div>
+    <div class="mb-4"><b>Email Address: &nbsp;&nbsp;&nbsp;</b>{{ account.user.email }}</div>
+    <div class="mb-4"><b>Role: &nbsp;&nbsp;&nbsp;</b>{{ account.get_role_display }}</div>
+    <div class="btn-group">
+        <form action="{% url "account_edit" account.pk %}">
+            <input class="btn btn-secondary" type="submit" value="Manage Account"/>
+        </form>
+        {% if request.user.account == account %}
+            <form action="{% url "my_password_change" %}" class="ml-1">
+                <input class="btn btn-secondary" type="submit" value="Change Password"/>
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}

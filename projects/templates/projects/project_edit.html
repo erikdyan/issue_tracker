@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="mb-4">
+        <h1>Manage Project</h1>
+        <hr>
+    </div>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url "project_list" %}">Active Projects</a></li>
+            <li class="breadcrumb-item">
+                <a href="{% url "project_detail_ticket_open" form.instance.pk %}">{{ form.instance.title }}</a>
+            </li>
+            <li class="breadcrumb-item active">Manage</li>
+        </ol>
+    </nav>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-secondary" type="submit">Save</button>
+    </form>
+{% endblock %}

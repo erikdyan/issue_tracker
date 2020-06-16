@@ -1,0 +1,37 @@
+<div class="card card-body">
+    <h6 class="card-title">{{ label }}</h6>
+    <table class="table table-bordered table-striped" id={{ id }}>
+        <thead>
+        <tr>
+            <th onclick="sortTable(0, '{{ id }}')" style="cursor: pointer">Title</th>
+            <th onclick="sortTable(1, '{{ id }}')" style="cursor: pointer">Project</th>
+            <th onclick="sortTable(2, '{{ id }}')" style="cursor: pointer">Created Date</th>
+            <th onclick="sortTable(3, '{{ id }}')" style="cursor: pointer">Priority</th>
+            <th onclick="sortTable(4, '{{ id }}')" style="cursor: pointer">Status</th>
+            <th onclick="sortTable(5, '{{ id }}')" style="cursor: pointer">Type</th>
+            <th onclick="sortTable(6, '{{ id }}')" style="cursor: pointer">Updated Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for ticket in tickets %}
+            <tr>
+                <td><a href="{% url "ticket_detail" ticket.pk %}">{{ ticket.title }}</a></td>
+                <td>
+                    <a href="{% url "project_detail_ticket_open" ticket.project.pk %}">{{ ticket.project.title }}</a>
+                </td>
+                <td>{{ ticket.created_date }}</td>
+                <td>{{ ticket.get_priority_display }}</td>
+                {% if ticket.status == "open" %}
+                    <td class="table-danger">{{ ticket.get_status_display }}</td>
+                {% elif ticket.status == "in_progress" %}
+                    <td class="table-warning">{{ ticket.get_status_display }}</td>
+                {% else %}
+                    <td class="table-success">{{ ticket.get_status_display }}</td>
+                {% endif %}
+                <td>{{ ticket.get_type_display }}</td>
+                <td>{{ ticket.updated_date }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

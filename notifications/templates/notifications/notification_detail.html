@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="mb-4">
+        <h1>{{ notification.title }}</h1>
+        <hr>
+    </div>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url "notification_list" %}">Inbox</a></li>
+            <li class="breadcrumb-item active">{{ notification.title }}</li>
+        </ol>
+    </nav>
+    <div class="card">
+        <div class="card-body">
+            <h6 class="card-subtitle mb-2 text-muted">{{ notification.created_date }}</h6>
+            <p class="card-text">{{ notification.text }}</p>
+        </div>
+    </div>
+{% endblock %}

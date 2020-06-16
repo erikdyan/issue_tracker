@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="mb-4">
+        <h1>Archived Projects</h1>
+        <hr>
+    </div>
+    <input class="mb-4" id="input" onkeyup="filter('input', 'table')" placeholder="Filter" type="text">
+    <table class="table table-bordered table-striped" id="table">
+        <thead>
+        <tr>
+            <th onclick="sortTable(0, 'table')" style="cursor: pointer">Title</th>
+            <th onclick="sortTable(1, 'table')" style="cursor: pointer">Created Date</th>
+            <th onclick="sortTable(2, 'table')" style="cursor: pointer">Archived Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for project in projects %}
+            <tr>
+                <td><a href="{% url "project_detail_ticket_open" project.pk %}">{{ project.title }}</a></td>
+                <td>{{ project.created_date }}</td>
+                <td>{{ project.archived_date }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

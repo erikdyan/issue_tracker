@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="mb-4">
+        <h1>Active Projects</h1>
+        <hr>
+    </div>
+    {% if user.account.role == "admin" or user.account.role == "project_manager" %}
+        <form action="{% url "project_new" %}">
+            <input class="btn btn-secondary mb-2" type="submit" value="New Project"/>
+        </form>
+    {% endif %}
+    <input class="mb-4" id="input" onkeyup="filter('input', 'table')" placeholder="Filter" type="text">
+    <table class="table table-bordered table-striped" id="table">
+        <thead>
+        <tr>
+            <th onclick="sortTable(0, 'table')" style="cursor: pointer">Title</th>
+            <th onclick="sortTable(1, 'table')" style="cursor: pointer">Created Date</th>
+            <th onclick="sortTable(2, 'table')" style="cursor: pointer">Project Manager</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for project in projects %}
+            <tr>
+                <td><a href="{% url "project_detail_ticket_open" project.pk %}">{{ project.title }}</a></td>
+                <td>{{ project.created_date }}</td>
+                <td>{{ project.project_manager.user.username }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

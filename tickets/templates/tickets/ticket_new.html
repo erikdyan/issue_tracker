@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="mb-4">
+        <h1>New Ticket</h1>
+        <hr>
+    </div>
+    <nav>
+        <ol class="breadcrumb">
+            {% if not project.archived %}
+                <li class="breadcrumb-item"><a href="{% url "project_list" %}">Active Projects</a></li>
+            {% else %}
+                <li class="breadcrumb-item"><a href="{% url "project_archive_list" %}">Archived Projects</a></li>
+            {% endif %}
+            <li class="breadcrumb-item">
+                <a href="{% url "project_detail_ticket_open" project.pk %}">{{ project.title }}</a>
+            </li>
+            <li class="breadcrumb-item active">Create Ticket</li>
+        </ol>
+    </nav>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-secondary" type="submit">Save</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="mb-4">
+        <h1>Dashboard</h1>
+        <hr>
+    </div>
+    <div class="card mb-4">
+        <div class="card-header">Tickets:</div>
+        {% if not user.account.role == "user" %}
+            <div class="card-body">
+                <h5 class="card-title">Developer Overview:</h5>
+                <div class="btn-group">
+                    <p>
+                        <a class="badge badge-light" data-toggle="collapse" href="#assignedToAll">
+                            Total: {{ assigned_to_all.count }}
+                        </a>
+                    </p>
+                    <p>
+                        <a class="badge badge-danger ml-1" data-toggle="collapse" href="#assignedToOpen">
+                            Open: {{ assigned_to_open.count }}
+                        </a>
+                    </p>
+                    <p>
+                        <a class="badge badge-warning ml-1" data-toggle="collapse" href="#assignedToInProgress">
+                            In Progress: {{ assigned_to_in_progress.count }}
+                        </a>
+                    </p>
+                    <p>
+                        <a class="badge badge-success ml-1" data-toggle="collapse" href="#assignedToClosed">
+                            Closed: {{ assigned_to_closed.count }}
+                        </a>
+                    </p>
+                    <p>
+                        <a class="badge badge-primary ml-1" data-toggle="collapse" href="#assignedToBug">
+                            Bugs: {{ assigned_to_bug.count }}
+                        </a>
+                    </p>
+                    <p>
+                        <a class="badge badge-secondary ml-1" data-toggle="collapse" href="#assignedToFeatureRequest">
+                            Feature Requests: {{ assigned_to_feature_request.count }}
+                        </a>
+                    </p>
+                    <p>
+                        <a class="badge badge-info ml-1" data-toggle="collapse" href="#assignedToComment">
+                            Comments: {{ assigned_to_comment.count }}
+                        </a>
+                    </p>
+                </div>
+                <div class="collapse" id="assignedToAll">
+                    {% include "index/table.html" with id="assignedToAllTable" label="All Tickets:" tickets=assigned_to_all %}
+                </div>
+                <div class="collapse mt-1" id="assignedToOpen">
+                    {% include "index/table.html" with id="assignedToOpenTable" label="Open Tickets:" tickets=assigned_to_open %}
+                </div>
+                <div class="collapse mt-1" id="assignedToInProgress">
+                    {% include "index/table.html" with id="assignedToInProgressTable" label="In Progress Tickets:" tickets=assigned_to_in_progress %}
+                </div>
+                <div class="collapse mt-1" id="assignedToClosed">
+                    {% include "index/table.html" with id="assignedToClosedTable" label="Closed Tickets:" tickets=assigned_to_closed %}
+                </div>
+                <div class="collapse mt-1" id="assignedToBug">
+                    {% include "index/table.html" with id="assignedToBugTable" label="Bugs:" tickets=assigned_to_bug %}
+                </div>
+                <div class="collapse mt-1" id="assignedToFeatureRequest">
+                    {% include "index/table.html" with id="assignedToFeatureRequestTable" label="Feature Requests:" tickets=assigned_to_feature_request %}
+                </div>
+                <div class="collapse mt-1" id="assignedToComment">
+                    {% include "index/table.html" with id="assignedToCommentTable" label="Comments:" tickets=assigned_to_comment %}
+                </div>
+            </div>
+        {% endif %}
+        <div class="card-body">
+            <h5 class="card-title">My Tickets:</h5>
+            <div class="btn-group">
+                <p>
+                    <a class="badge badge-light" data-toggle="collapse" href="#createdByAll">
+                        Total: {{ created_by_all.count }}
+                    </a>
+                </p>
+                <p>
+                    <a class="badge badge-danger ml-1" data-toggle="collapse" href="#createdByOpen">
+                        Open: {{ created_by_open.count }}
+                    </a>
+                </p>
+                <p>
+                    <a class="badge badge-warning ml-1" data-toggle="collapse" href="#createdByInProgress">
+                        In Progress: {{ created_by_in_progress.count }}
+                    </a>
+                </p>
+                <p>
+                    <a class="badge badge-success ml-1" data-toggle="collapse" href="#createdByClosed">
+                        Closed: {{ created_by_closed.count }}
+                    </a>
+                </p>
+                <p>
+                    <a class="badge badge-primary ml-1" data-toggle="collapse" href="#createdByBug">
+                        Bugs: {{ created_by_bug.count }}
+                    </a>
+                </p>
+                <p>
+                    <a class="badge badge-secondary ml-1" data-toggle="collapse" href="#createdByFeatureRequest">
+                        Feature Requests: {{ created_by_feature_request.count }}
+                    </a>
+                </p>
+                <p>
+                    <a class="badge badge-info ml-1" data-toggle="collapse" href="#createdByComment">
+                        Comments: {{ created_by_comment.count }}
+                    </a>
+                </p>
+            </div>
+            <div class="collapse" id="createdByAll">
+                {% include "index/table.html" with id="createdByAllTable" label="All Tickets:" tickets=created_by_all %}
+            </div>
+            <div class="collapse mt-1" id="createdByOpen">
+                {% include "index/table.html" with id="createdByOpenTable" label="Open Tickets:" tickets=created_by_open %}
+            </div>
+            <div class="collapse mt-1" id="createdByInProgress">
+                {% include "index/table.html" with id="createdByInProgressTable" label="In Progress Tickets:" tickets=created_by_in_progress %}
+            </div>
+            <div class="collapse mt-1" id="createdByClosed">
+                {% include "index/table.html" with id="createdByClosedTable" label="Closed Tickets:" tickets=created_by_closed %}
+            </div>
+            <div class="collapse mt-1" id="createdByBug">
+                {% include "index/table.html" with id="createdByBugTable" label="Bugs:" tickets=created_by_bug %}
+            </div>
+            <div class="collapse mt-1" id="createdByFeatureRequest">
+                {% include "index/table.html" with id="createdByFeatureRequestTable" label="Feature Requests:" tickets=created_by_feature_request %}
+            </div>
+            <div class="collapse mt-1" id="createdByComment">
+                {% include "index/table.html" with id="createdByCommentTable" label="Comments:" tickets=created_by_comment %}
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">Top Projects:</div>
+        <div class="card-body">
+            {% for project in top_projects %}
+                <h5 class="card-title">
+                    <a href="{% url "project_detail_ticket_open" project.pk %}">{{ project.title }}</a>
+                </h5>
+                <p class="card-text">{{ project.description }}</p>
+            {% endfor %}
+            <p><a class="btn btn-secondary" data-toggle="collapse" href="#collapseExample">More</a></p>
+            <div class="collapse" id="collapseExample">
+                <div class="card card-body">
+                    {% for project in more_projects %}
+                        <h6 class="card-title">
+                            <a href="{% url "project_detail_ticket_open" project.pk %}">{{ project.title }}</a>
+                        </h6>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
