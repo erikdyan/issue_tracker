@@ -9,6 +9,9 @@ from tickets.models import Ticket
 
 @login_required
 def comment_new(request, pk):
+	if request.user.account.demo:
+		raise Http404
+	
 	ticket = get_object_or_404(Ticket, pk=pk)
 	if ticket.project.archived:
 		raise Http404

@@ -11,7 +11,9 @@ def notification_detail(request, pk):
 	if not request.user.account == notification.recipient:
 		raise Http404
 
-	notification.mark_read()
+	if not request.user.account.demo:
+		notification.mark_read()
+
 	return render(request, 'notifications/notification_detail.html', {'notification': notification})
 
 

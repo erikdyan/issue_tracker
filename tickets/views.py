@@ -10,6 +10,9 @@ from tickets.models import Ticket
 
 @login_required
 def ticket_close(request, pk):
+	if request.user.account.demo:
+		raise Http404
+
 	ticket = get_object_or_404(Ticket, pk=pk)
 	if ticket.project.archived:
 		raise Http404
@@ -46,6 +49,9 @@ def ticket_detail(request, pk):
 
 @login_required
 def ticket_edit(request, pk):
+	if request.user.account.demo:
+		raise Http404
+
 	ticket = get_object_or_404(Ticket, pk=pk)
 	if ticket.project.archived:
 		raise Http404
@@ -102,6 +108,9 @@ def ticket_list_created(request):
 
 @login_required
 def ticket_new(request, pk):
+	if request.user.account.demo:
+		raise Http404
+
 	project = get_object_or_404(Project, pk=pk)
 	if project.archived:
 		raise Http404
@@ -132,6 +141,9 @@ def ticket_new(request, pk):
 
 @login_required
 def ticket_remove(request, pk):
+	if request.user.account.demo:
+		raise Http404
+
 	ticket = get_object_or_404(Ticket, pk=pk)
 	assigned_to = ticket.assigned_to
 	title = ticket.title

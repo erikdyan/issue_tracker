@@ -53,6 +53,18 @@ class ProjectsTests(TestCase):
 			'role': 'user'
 		})
 
+		# Create demo account.
+		self.client.post('/accounts/signup/', data={
+			'username': 'WilliamMorris',
+			'first_name': 'William',
+			'last_name': 'Morris',
+			'email': 'William@morris.co.uk',
+			'password1': 'TestPassword',
+			'password2': 'TestPassword',
+			'role': 'admin',
+			'demo': True
+		})
+
 		# Create a project.
 		self.login_as_admin()
 		self.client.post('/projects/new/', data={
@@ -73,6 +85,9 @@ class ProjectsTests(TestCase):
 
 	def login_as_user(self):
 		self.client.post('/accounts/login/', data={'username': 'J.R.R.Tolkien', 'password': 'TestPassword'})
+
+	def login_as_demo(self):
+		self.client.post('/accounts/login/', data={'username': 'WilliamMorris', 'password': 'TestPassword'})
 
 	#########################
 	# Project archive tests #
@@ -105,6 +120,10 @@ class ProjectsTests(TestCase):
 
 	def test_users_cannot_archive_project(self):
 		self.login_as_user()
+		self.assertEqual(404, self.client.get('/projects/1/archive/').status_code)
+
+	def test_demo_accounts_cannot_archive_project(self):
+		self.login_as_demo()
 		self.assertEqual(404, self.client.get('/projects/1/archive/').status_code)
 
 	def test_project_archive_sends_notification_to_project_project_manager(self):
@@ -371,6 +390,14 @@ class ProjectsTests(TestCase):
 			'project_manager': Account.objects.get(pk=2).id
 		}).status_code)
 
+	def test_demo_accounts_cannot_edit_projects(self):
+		self.login_as_demo()
+		self.assertEqual(404, self.client.post('/projects/1/edit/', data={
+			'title': 'University of Oxford',
+			'description': 'A university in England',
+			'project_manager': Account.objects.get(pk=2).id
+		}).status_code)
+
 	def test_project_edit_uses_correct_template(self):
 		self.login_as_admin()
 		self.assertTemplateUsed(self.client.get('/projects/1/edit/'), 'projects/project_edit.html')
@@ -491,6 +518,14 @@ class ProjectsTests(TestCase):
 			'project_manager': Account.objects.get(pk=1).id
 		}).status_code)
 
+	def test_demo_accounts_cannot_create_new_projects(self):
+		self.login_as_demo()
+		self.assertEqual(404, self.client.post('/projects/new/', data={
+			'title': 'Cambridge University',
+			'description': 'Another university in England',
+			'project_manager': Account.objects.get(pk=1).id
+		}).status_code)
+
 	def test_project_new_uses_correct_template(self):
 		self.login_as_admin()
 		self.assertTemplateUsed(self.client.get('/projects/new/'), 'projects/project_new.html')
@@ -535,6 +570,10 @@ class ProjectsTests(TestCase):
 
 	def test_users_cannot_remove_projects(self):
 		self.login_as_user()
+		self.assertEqual(404, self.client.get('/projects/1/remove/').status_code)
+
+	def test_demo_accounts_cannot_remove_projects(self):
+		self.login_as_demo()
 		self.assertEqual(404, self.client.get('/projects/1/remove/').status_code)
 
 	def test_project_remove_sends_notification_to_project_project_manager(self):

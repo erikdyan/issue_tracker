@@ -11,7 +11,12 @@
             {% endfor %}
         </div>
     {% endif %}
-    <div class="mb-4">Not registered? <a href="{% url "signup" %}">Sign Up</a></div>
+    <div class="mb-4">
+        Not registered?
+        <a href="{% url "signup" %}">Sign Up</a>
+        or
+        <a href="{% url "login_as_demo" %}" onclick="return confirm(`As a demo admin, you will receive admin-level access to the website. All areas, however, will be read-only. Features such as creating and editing tickets, managing projects, and changing account details will be disabled. Additionally, notifications will be permanently marked as 'unread'.`);">login as a demo admin</a>
+    </div>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}

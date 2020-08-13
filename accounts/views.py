@@ -19,7 +19,7 @@ def account_detail(request, pk):
 
 @login_required
 def account_edit(request, pk):
-	if not (request.user.account.pk == pk or request.user.account.role == 'admin'):
+	if not (request.user.account.pk == pk or request.user.account.role == 'admin') or request.user.account.demo:
 		raise Http404
 
 	account = get_object_or_404(Account, pk=pk)
@@ -93,6 +93,12 @@ def login(request):
 	return render(request, 'accounts/login.html', {'form': LoginForm()})
 
 
+def login_as_demo(request):
+	user = auth.authenticate(username='DemoUser', password='DemoPassword')
+	auth.login(request, user)
+	return redirect('index')
+
+
 @login_required
 def logout(request):
 	auth.logout(request)
@@ -101,6 +107,9 @@ def logout(request):
 
 @login_required
 def my_password_change(request):
+	if request.user.account.demo:
+		raise Http404
+
 	if request.method == 'POST':
 		form = PasswordChangeForm(request.user, request.POST)
 		if form.is_valid():

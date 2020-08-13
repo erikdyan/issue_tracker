@@ -53,6 +53,18 @@ class TicketsTest(TestCase):
 			'role': 'user'
 		})
 
+		# Create demo account.
+		self.client.post('/accounts/signup/', data={
+			'username': 'WilliamMorris',
+			'first_name': 'William',
+			'last_name': 'Morris',
+			'email': 'William@morris.co.uk',
+			'password1': 'TestPassword',
+			'password2': 'TestPassword',
+			'role': 'admin',
+			'demo': True
+		})
+
 		# Create a project.
 		self.login_as_admin()
 		self.client.post('/projects/new/', data={
@@ -83,6 +95,9 @@ class TicketsTest(TestCase):
 
 	def login_as_user(self):
 		self.client.post('/accounts/login/', data={'username': 'J.R.R.Tolkien', 'password': 'TestPassword'})
+
+	def login_as_demo(self):
+		self.client.post('/accounts/login/', data={'username': 'WilliamMorris', 'password': 'TestPassword'})
 
 	#######################
 	# Assigned list tests #
@@ -212,6 +227,10 @@ class TicketsTest(TestCase):
 
 	def test_users_cannot_close_tickets(self):
 		self.login_as_user()
+		self.assertEqual(404, self.client.get('/tickets/1/close/').status_code)
+
+	def test_demo_accounts_cannot_close_tickets(self):
+		self.login_as_demo()
 		self.assertEqual(404, self.client.get('/tickets/1/close/').status_code)
 
 	def test_ticket_close_sends_notification_to_ticket_assigned_to(self):
@@ -355,6 +374,15 @@ class TicketsTest(TestCase):
 
 	def test_users_cannot_edit_tickets(self):
 		self.login_as_user()
+		self.assertEqual(404, self.client.post('/tickets/1/edit/', data={
+			'assigned_to': Account.objects.get(pk=1).id,
+			'priority': 'high',
+			'status': 'closed',
+			'type': 'bug'
+		}).status_code)
+
+	def test_demo_accounts_cannot_edit_tickets(self):
+		self.login_as_demo()
 		self.assertEqual(404, self.client.post('/tickets/1/edit/', data={
 			'assigned_to': Account.objects.get(pk=1).id,
 			'priority': 'high',
@@ -546,6 +574,16 @@ class TicketsTest(TestCase):
 		self.assertEqual('open', ticket.status)
 		self.assertEqual('feature_request', ticket.type)
 
+	def test_demo_accounts_cannot_create_new_tickets(self):
+		self.login_as_demo()
+		self.assertEqual(404, self.client.post('/tickets/1/new/', data={
+			'title': 'Philosophy',
+			'description': 'Another department',
+			'created_date': timezone.now(),
+			'priority': 'high',
+			'type': 'feature_request'
+		}).status_code)
+
 	def test_ticket_new_uses_correct_template(self):
 		self.login_as_admin()
 		self.assertTemplateUsed(self.client.get('/tickets/1/new/'), 'tickets/ticket_new.html')
@@ -605,6 +643,10 @@ class TicketsTest(TestCase):
 
 	def test_users_cannot_remove_tickets(self):
 		self.login_as_user()
+		self.assertEqual(404, self.client.get('/tickets/1/remove/').status_code)
+
+	def test_demo_accounts_cannot_remove_tickets(self):
+		self.login_as_demo()
 		self.assertEqual(404, self.client.get('/tickets/1/remove/').status_code)
 
 	def test_cannot_remove_tickets_from_archived_projects(self):

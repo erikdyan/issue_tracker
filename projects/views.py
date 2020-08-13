@@ -9,6 +9,9 @@ from projects.models import Project
 
 @login_required
 def project_archive(request, pk):
+	if request.user.account.demo:
+		raise Http404
+
 	project = get_object_or_404(Project, pk=pk)
 	project_manager = project.project_manager
 
@@ -53,6 +56,9 @@ def project_detail_ticket_open(request, pk):
 
 @login_required
 def project_edit(request, pk):
+	if request.user.account.demo:
+		raise Http404
+
 	project = get_object_or_404(Project, pk=pk)
 	project_manager = project.project_manager
 
@@ -91,7 +97,8 @@ def project_list(request):
 
 @login_required
 def project_new(request):
-	if not (request.user.account.role == 'admin' or request.user.account.role == 'project_manager'):
+	if not (request.user.account.role == 'admin' or request.user.account.role == 'project_manager') or \
+			request.user.account.demo:
 		raise Http404
 
 	if request.method == 'POST':
@@ -113,7 +120,7 @@ def project_new(request):
 
 @login_required
 def project_remove(request, pk):
-	if not request.user.account.role == 'admin':
+	if not request.user.account.role == 'admin' or request.user.account.demo:
 		raise Http404
 
 	project = get_object_or_404(Project, pk=pk)

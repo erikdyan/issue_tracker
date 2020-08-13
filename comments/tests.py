@@ -54,6 +54,18 @@ class CommentsTest(TestCase):
 			'role': 'user'
 		})
 
+		# Create demo account.
+		self.client.post('/accounts/signup/', data={
+			'username': 'WilliamMorris',
+			'first_name': 'William',
+			'last_name': 'Morris',
+			'email': 'William@morris.co.uk',
+			'password1': 'TestPassword',
+			'password2': 'TestPassword',
+			'role': 'admin',
+			'demo': True
+		})
+
 		# Create a project.
 		self.login_as_admin()
 		self.client.post('/projects/new/', data={
@@ -85,6 +97,9 @@ class CommentsTest(TestCase):
 
 	def login_as_user(self):
 		self.client.post('/accounts/login/', data={'username': 'J.R.R.Tolkien', 'password': 'TestPassword'})
+
+	def login_as_demo(self):
+		self.client.post('/accounts/login/', data={'username': 'WilliamMorris', 'password': 'TestPassword'})
 
 	#####################
 	# Comment new tests #
@@ -134,6 +149,10 @@ class CommentsTest(TestCase):
 		self.assertEqual('Functional Programming', comment.text)
 		self.assertEqual('J.R.R.Tolkien', comment.author.user.username)
 		self.assertEqual(Ticket.objects.get(pk=1), comment.ticket)
+
+	def test_demo_accounts_cannot_create_new_comments(self):
+		self.login_as_demo()
+		self.assertEqual(404, self.client.post('/comments/1/new/', data={'text': 'Functional Programming'}).status_code)
 
 	def test_comment_new_uses_correct_template(self):
 		self.login_as_admin()

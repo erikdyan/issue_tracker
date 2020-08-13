@@ -8,7 +8,7 @@ from accounts.models import Account
 class AccountForm(forms.ModelForm):
 	class Meta:
 		model = Account
-		fields = ('role',)
+		fields = ('role', 'demo')
 
 
 class EditUserForm(forms.ModelForm):
